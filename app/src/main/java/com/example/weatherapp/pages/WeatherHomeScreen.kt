@@ -2,6 +2,7 @@ package com.example.weatherapp.pages
 
 import androidx.compose.foundation.content.MediaType.Companion.Text
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,11 +16,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.unit.dp
 import com.example.weatherapp.R
+import com.example.weatherapp.WeatherApp
 import com.example.weatherapp.customuis.AppBackground
+import com.example.weatherapp.data.CurrentWeather
+import com.example.weatherapp.utils.getFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,13 +59,47 @@ fun WeatherHomeScreen(
                     .wrapContentSize()
             ) {
                 when(uiState){
-                    is WeatherHomeUiState.Error -> Text(text = "Fail to fetch data")
-                    is WeatherHomeUiState.Loading -> Text(text = "Loading")
-                    is WeatherHomeUiState.Success -> Text(text = uiState.weather.currentWeather.main!!.temp!!.toString())
+                    is WeatherHomeUiState.Error -> Text(text = "Fail to fetch data", style = MaterialTheme.typography.displaySmall)
+                    is WeatherHomeUiState.Loading -> Text(text = "Loading", style = MaterialTheme.typography.displaySmall)
+                    is WeatherHomeUiState.Success -> WeatherSection(weather = uiState.weather)
                 }
 
             }
 
         }
+    }
+}
+
+@Composable
+fun WeatherSection(
+    weather: Weather,
+    modifier: Modifier = Modifier
+){
+    Column(
+        modifier = modifier.padding(8.dp)
+    ){
+        CurrentWeatherSection(weather.currentWeather)
+
+
+    }
+
+}
+@Composable
+fun CurrentWeatherSection(
+    currentWeather: CurrentWeather,
+    modifier: Modifier = Modifier
+){
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+        Text(
+            text = "${currentWeather.name}, ${currentWeather.sys?.country}",
+            style = MaterialTheme.typography.titleMedium
+        )
+        Text(
+            text = getFormattedDate(dt = currentWeather.dt!!, pattern = "MM/dd, yyyy"),
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }
