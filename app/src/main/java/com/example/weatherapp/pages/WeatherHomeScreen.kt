@@ -23,7 +23,9 @@ import com.example.weatherapp.customuis.AppBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeatherHomeScreen(modifier: Modifier = Modifier) {
+fun WeatherHomeScreen(
+    uiState: WeatherHomeUiState,
+    modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize()
     ){
@@ -50,7 +52,11 @@ fun WeatherHomeScreen(modifier: Modifier = Modifier) {
                     .fillMaxSize()
                     .wrapContentSize()
             ) {
-                Text(text = "Home Screen", style = MaterialTheme.typography.displaySmall)
+                when(uiState){
+                    is WeatherHomeUiState.Error -> Text(text = "Fail to fetch data")
+                    is WeatherHomeUiState.Loading -> Text(text = "Loading")
+                    is WeatherHomeUiState.Success -> Text(text = uiState.weather.currentWeather.main!!.temp!!.toString())
+                }
 
             }
 

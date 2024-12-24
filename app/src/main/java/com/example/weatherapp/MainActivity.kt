@@ -32,7 +32,7 @@ fun WeatherApp(modifier: Modifier = Modifier) {
     val weatherHomeViewModel: WeatherHomeViewModel = viewModel()
     weatherHomeViewModel.getWeatherData()
     WeatherAppTheme {
-        WeatherHomeScreen()
+        WeatherHomeScreen(weatherHomeViewModel.uiState)
     }
 }
 
