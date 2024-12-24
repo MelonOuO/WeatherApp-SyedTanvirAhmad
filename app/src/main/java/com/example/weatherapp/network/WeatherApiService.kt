@@ -17,10 +17,10 @@ private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
 
 interface WeatherApiService{
-    @GET("weather?lat=24.79594349295699&lon=120.98266020739521&appid=935ec2f1d3ec6ff0a7f93c9e1f22960e&units=metric")
+    @GET()
     suspend fun getCurrentWeather(@Url endUrl: String): CurrentWeather
 
-    @GET("forecast?lat=24.79594349295699&lon=120.98266020739521&appid=935ec2f1d3ec6ff0a7f93c9e1f22960e&units=metric")
+    @GET()
     suspend fun getForecastWeather(@Url endUrl: String): ForecastWeather
 }
 
