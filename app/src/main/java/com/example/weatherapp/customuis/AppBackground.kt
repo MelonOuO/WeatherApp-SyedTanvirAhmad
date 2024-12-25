@@ -26,7 +26,7 @@ fun AppBackground(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
-            .alpha(0.55f)
+            .alpha(0.5f)
             .blur(
                 radius = 8.dp,
                 edgeTreatment = BlurredEdgeTreatment.Unbounded
