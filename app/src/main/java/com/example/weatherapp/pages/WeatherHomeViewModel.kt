@@ -1,6 +1,7 @@
 package com.example.weatherapp.pages
 
 import android.util.Log
+import android.widget.DatePicker
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,9 +19,18 @@ class WeatherHomeViewModel: ViewModel() {
     private val TAG = "WeatherHomeViewModel"
     private val weatherRepository: WeatherRepository = WeatherRepositoryImpl()
     var uiState: WeatherHomeUiState by mutableStateOf(WeatherHomeUiState.Loading)
+    private var latitude = 0.0
+    private var longitude = 0.0
 
     private val exceptionHandler = CoroutineExceptionHandler{ _, _ ->
         uiState = WeatherHomeUiState.Error
+    }
+
+    fun setLocation(
+        lat: Double,
+        lon: Double){
+        latitude = lat
+        longitude = lon
     }
 
     fun getWeatherData(){
