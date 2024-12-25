@@ -15,3 +15,8 @@ sealed interface WeatherHomeUiState{
 
 }
 
+sealed interface ConnectivityState{
+    data object Available: ConnectivityState
+    data object Unavailable: ConnectivityState
+}
+
