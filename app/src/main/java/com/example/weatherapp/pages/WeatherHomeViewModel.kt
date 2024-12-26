@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.data.ConnectivityRepository
 import com.example.weatherapp.data.CurrentWeather
 import com.example.weatherapp.data.DefaultConnectivityRepository
@@ -61,12 +62,12 @@ class WeatherHomeViewModel(
     }
 
     private suspend fun getCurrentData(): CurrentWeather{
-        val endUrl: String = "weather?lat=$latitude&lon=$longitude&appid=935ec2f1d3ec6ff0a7f93c9e1f22960e&units=metric"
+        val endUrl: String = "weather?lat=$latitude&lon=$longitude&appid=${BuildConfig.WEATHER_API_KEY}&units=metric"
         return weatherRepository.getCurrentWeather(endUrl)
     }
 
     private suspend fun getForecastData(): ForecastWeather{
-        val endUrl: String = "forecast?lat=$latitude&lon=$longitude&appid=935ec2f1d3ec6ff0a7f93c9e1f22960e&units=metric"
+        val endUrl: String = "forecast?lat=$latitude&lon=$longitude&appid=${BuildConfig.WEATHER_API_KEY}&units=metric"
         return weatherRepository.getForecastWeather(endUrl)
     }
     //to initial constructor of viewModel
