@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,7 +26,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.weatherapp.pages.ConnectivityState
 import com.example.weatherapp.pages.WeatherHomeScreen
+import com.example.weatherapp.pages.WeatherHomeUiState
 import com.example.weatherapp.pages.WeatherHomeViewModel
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -49,7 +52,8 @@ fun WeatherApp(
     client: FusedLocationProviderClient,
     modifier: Modifier = Modifier
 ) {
-    val weatherHomeViewModel: WeatherHomeViewModel = viewModel()
+    val weatherHomeViewModel: WeatherHomeViewModel =
+        viewModel(factory = WeatherHomeViewModel.Factory)
     val context = LocalContext.current
     var permissionGranted by remember { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(
@@ -80,9 +84,10 @@ fun WeatherApp(
         if(permissionGranted){
             client.lastLocation
                 .addOnSuccessListener {
-                weatherHomeViewModel
-                    .setLocation(it.latitude, it.longitude)
-                weatherHomeViewModel.getWeatherData()
+                    Log.d("getLocation", "${it.latitude }, ${it.longitude}" )
+                    weatherHomeViewModel
+                        .setLocation(it.latitude, it.longitude)
+                    weatherHomeViewModel.getWeatherData()
                 }
                 .addOnFailureListener{
                     Log.e("getLocation", "Failure ${it.message}" )
@@ -91,10 +96,17 @@ fun WeatherApp(
         }
 
     }
-
-
+    //create an observer of connectivity state
+    val connectivityState by weatherHomeViewModel.connectivityState.collectAsState()
     WeatherAppTheme {
-        WeatherHomeScreen(weatherHomeViewModel.uiState)
+        WeatherHomeScreen(
+            onRefresh = {
+                weatherHomeViewModel.uiState = WeatherHomeUiState.Loading
+                weatherHomeViewModel.getWeatherData()
+            },
+            isConnected = connectivityState == ConnectivityState.Available,
+            uiState = weatherHomeViewModel.uiState
+        )
     }
 }
 

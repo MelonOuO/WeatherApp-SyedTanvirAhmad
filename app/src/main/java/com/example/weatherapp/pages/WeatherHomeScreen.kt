@@ -1,7 +1,6 @@
 package com.example.weatherapp.pages
 
 import android.util.Log
-import androidx.compose.foundation.content.MediaType.Companion.Text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,30 +14,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.weatherapp.R
-import com.example.weatherapp.WeatherApp
 import com.example.weatherapp.customuis.AppBackground
 import com.example.weatherapp.data.CurrentWeather
 import com.example.weatherapp.data.ForecastWeather
@@ -49,6 +47,8 @@ import com.example.weatherapp.utils.getIconUrl
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherHomeScreen(
+    isConnected: Boolean,
+    onRefresh: () -> Unit,
     uiState: WeatherHomeUiState,
     modifier: Modifier = Modifier
 ) {
@@ -78,24 +78,58 @@ fun WeatherHomeScreen(
                     .fillMaxSize()
                     .wrapContentSize()
             ) {
-                when (uiState) {
-                    is WeatherHomeUiState.Error -> Text(
-                        text = "Fail to fetch data",
-                        style = MaterialTheme.typography.displaySmall
-                    )
+                if(!isConnected) {
+                    Text(text = "No Internet Connection",
+                        style = MaterialTheme.typography.displaySmall)
+                }else{
+                    when (uiState) {
+                        is WeatherHomeUiState.Error ->
+                            ErrorSection(
+                                message = "Fail to fetch data",
+                                onRefresh = onRefresh
+                            )
 
-                    is WeatherHomeUiState.Loading -> Text(
-                        text = "Loading",
-                        style = MaterialTheme.typography.displaySmall
-                    )
+                        is WeatherHomeUiState.Loading -> Text(
+                            text = "Loading",
+                            style = MaterialTheme.typography.displaySmall
+                        )
 
-                    is WeatherHomeUiState.Success -> WeatherSection(weather = uiState.weather)
+                        is WeatherHomeUiState.Success -> WeatherSection(weather = uiState.weather)
+                    }
                 }
+
 
             }
 
         }
     }
+}
+@Composable
+fun ErrorSection(
+    message: String,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    Column(){
+        Text(
+            text = message,
+            style = MaterialTheme.typography.displaySmall
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        IconButton(
+            onClick = onRefresh,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Refresh,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(40.dp)
+            )
+
+        }
+    }
+
 }
 
 @Composable
