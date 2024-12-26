@@ -1,6 +1,7 @@
 package com.example.weatherapp.data
 
-import com.example.weatherapp.network.WeatherAPi
+import com.example.weatherapp.network.WeatherApiService
+import javax.inject.Inject
 
 interface WeatherRepository{
     suspend fun getCurrentWeather(endUrl: String): CurrentWeather
@@ -8,13 +9,15 @@ interface WeatherRepository{
 
 }
 
-class WeatherRepositoryImpl : WeatherRepository {
+class WeatherRepositoryImpl @Inject constructor(
+    private val weatherApiService: WeatherApiService
+) : WeatherRepository {
     override suspend fun getCurrentWeather(endUrl: String): CurrentWeather {
-        return WeatherAPi.retrofitService.getCurrentWeather(endUrl)
+        return weatherApiService.getCurrentWeather(endUrl)
     }
 
     override suspend fun getForecastWeather(endUrl: String): ForecastWeather {
-        return WeatherAPi.retrofitService.getForecastWeather(endUrl)
+        return weatherApiService.getForecastWeather(endUrl)
     }
 
 }

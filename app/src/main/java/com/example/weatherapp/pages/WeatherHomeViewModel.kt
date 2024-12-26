@@ -20,16 +20,20 @@ import com.example.weatherapp.data.DefaultConnectivityRepository
 import com.example.weatherapp.data.ForecastWeather
 import com.example.weatherapp.data.WeatherRepository
 import com.example.weatherapp.data.WeatherRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class WeatherHomeViewModel(
-    private val connectivityRepository: ConnectivityRepository
+@HiltViewModel
+class WeatherHomeViewModel @Inject constructor(
+    private val connectivityRepository: ConnectivityRepository,
+    private val weatherRepository: WeatherRepository
 ): ViewModel() {
     private val TAG = "WeatherHomeViewModel"
-    private val weatherRepository: WeatherRepository = WeatherRepositoryImpl()
+//    private val weatherRepository: WeatherRepository = WeatherRepositoryImpl()
     var uiState: WeatherHomeUiState by mutableStateOf(WeatherHomeUiState.Loading)
     private var latitude = 0.0
     private var longitude = 0.0
@@ -71,7 +75,7 @@ class WeatherHomeViewModel(
         return weatherRepository.getForecastWeather(endUrl)
     }
     //to initial constructor of viewModel
-    companion object {
+    /*companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as Application) //context
@@ -83,5 +87,5 @@ class WeatherHomeViewModel(
             }
         }
 
-    }
+    }*/
 }

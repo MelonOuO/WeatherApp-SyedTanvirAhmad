@@ -1,6 +1,5 @@
 package com.example.weatherapp
 
-import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -8,12 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,7 +27,9 @@ import com.example.weatherapp.pages.WeatherHomeViewModel
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +49,7 @@ fun WeatherApp(
     modifier: Modifier = Modifier
 ) {
     val weatherHomeViewModel: WeatherHomeViewModel =
-        viewModel(factory = WeatherHomeViewModel.Factory)
+        viewModel()
     val context = LocalContext.current
     var permissionGranted by remember { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(
